@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "./add-cat.module.css";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase"; // Make sure to import db from your firebase configuration
+import { redirect } from "next/navigation";
 
 export default function AddCat() {
   const [formData, setFormData] = useState({
@@ -12,9 +15,6 @@ export default function AddCat() {
     breed: "",
     image: null,
   });
-  const [cats, setCats] = useState([]);
-
-  const [imagePreview, setImagePreview] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -25,32 +25,28 @@ export default function AddCat() {
   }
 
   // Add items to database
+  const addCat = async (e) => {
+    e.preventDefault();
 
-  // Read items from database
-
-  // useEffect(() => {
-  //   async function getCats() {
-  //     const catsData = await fetchCatsData();
-  //     setCats(catsData); // Store the fetched cats data in state
-  //   }
-  //   getCats();
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchCatsData();
-  // }, []);
-  // function handleImageChange(e) {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFormData((prev) => ({ ...prev, image: file }));
-  //     setImagePreview(URL.createObjectURL(file));
-  //   }
-  // }
+    try {
+      await addDoc(collection(db, "cats"), {
+        name: formData.name,
+        slug: formData.slug,
+        description: formData.description,
+        owner: formData.owner,
+        age: formData.age,
+        breed: formData.breed,
+      });
+      console.log("Cat added successfully!");
+    } catch (error) {
+      console.error("Error adding cat: ", error);
+    }
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
-    // Handle form submission logic here (e.g., API call)
-    console.log(formData);
+    addCat(e); // Call addCat inside handleSubmit
+    redirect("/");
   }
 
   return (
@@ -122,23 +118,6 @@ export default function AddCat() {
             onChange={handleChange}
           />
         </label>
-
-        {/* <label className={styles.label}>
-          Image:
-          <input
-            className={styles.input}
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </label> */}
-
-        {/* {imagePreview && (
-          <div className={styles.imagePreview}>
-            <img src={imagePreview} alt="Cat Preview" />
-          </div>
-        )} */}
 
         <button type="submit" className={styles.button}>
           Add Cat

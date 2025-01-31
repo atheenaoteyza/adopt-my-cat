@@ -1,19 +1,14 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-
-export default async function fetchCatsData() {
+export const fetchCatsData = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "cats"));
-    const catsData = [];
-
+    const catsList = [];
     querySnapshot.forEach((doc) => {
-      catsData.push({ id: doc.id, ...doc.data() });
-      console.log(` ${doc.id} => ${doc.data()}`);
-      console.log("hello");
+      catsList.push({ id: doc.id, ...doc.data() });
     });
-
-    return catsData; // Return the array of data for use elsewhere in the app
+    return catsList; // Log the data to the console
   } catch (error) {
-    console.error("Error fetching cats data:", error);
+    console.error("Error fetching cats data: ", error);
   }
-}
+};
