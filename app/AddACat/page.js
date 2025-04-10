@@ -36,6 +36,7 @@ export default function AddCat() {
         owner: formData.owner,
         age: formData.age,
         breed: formData.breed,
+        image: formData.image,
       });
       console.log("Cat added successfully!");
     } catch (error) {
@@ -116,6 +117,15 @@ export default function AddCat() {
             name="breed"
             value={formData.breed}
             onChange={handleChange}
+          />
+        </label>
+        <label className={styles.label}>
+          Upload Image:
+          <input
+            className={styles.input}
+            type="file"
+            accept="image/*"
+            //onChange={handleFileChange}
           />
         </label>
 
